@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Detalhada do Jogo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .quarter-analysis {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+        }
+        .trend-up {
+            color: #28a745;
+        }
+        .trend-down {
+            color: #dc3545;
+        }
+        .trend-neutral {
+            color: #6c757d;
+        }
+        .confidence-high {
+            color: #28a745;
+        }
+        .confidence-medium {
+            color: #ffc107;
+        }
+        .confidence-low {
+            color: #dc3545;
+        }
+        .momentum-bar {
+            height: 10px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #dc3545 0%, #ffc107 50%, #28a745 100%);
+            margin: 10px 0;
+        }
+        .momentum-indicator {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border: 2px solid #000;
+            border-radius: 50%;
+            position: relative;
+            top: -15px;
+            transition: left 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">
+                <i class='bx bx-line-chart'></i>
+                Análise Detalhada
+            </span>
+            <div>
+                <a href="/holzhauer" class="btn btn-outline-light me-2">Voltar</a>
+                <a href="/" class="btn btn-outline-light">Início</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Placar do Jogo -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div id="game-header" class="text-center">
+                    <!-- Será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Análise por Jogador -->
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Análise por Jogador</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="player-analysis">
+                            <!-- Será preenchido via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previsões -->
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Previsões Holzhauer</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="predictions">
+                            <!-- Será preenchido via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gameId = window.location.pathname.split('/').pop();
+
+        function updateGameData() {
+            fetch(`/get_game_data/${gameId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('game-header').innerHTML = `
+                        <div class="row align-items-center">
+                            <div class="col-md-5 text-end">
+                                <h4>${data.home_team}</h4>
+                                <h2>${data.home_score}</h2>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="badge bg-primary mb-2">${data.quarter}Q ${data.time}</div>
+                                <div class="momentum-container">
+                                    <div class="momentum-bar"></div>
+                                    <div class="momentum-indicator" style="left: ${data.momentum}%"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 text-start">
+                                <h4>${data.away_team}</h4>
+                                <h2>${data.away_score}</h2>
+                            </div>
+                        </div>
+                    `;
+                });
+        }
+
+        function updatePlayerAnalysis() {
+            fetch(`/get_player_analysis/${gameId}`)
+                .then(response => response.json())
+                .then(players => {
+                    document.getElementById('player-analysis').innerHTML = players.map(player => `
+                        <div class="stat-card">
+                            <h5>${player.name}</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="small text-muted">Pontos</div>
+                                    <div class="h4">${player.stats.points}</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="small text-muted">Rebotes</div>
+                                    <div class="h4">${player.stats.rebounds}</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="small text-muted">Assistências</div>
+                                    <div class="h4">${player.stats.assists}</div>
+                                </div>
+                            </div>
+                            <div class="quarter-analysis mt-3">
+                                <h6>Análise por Quarter</h6>
+                                ${player.quarter_trends.map(q => `
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>Q${q.quarter}</span>
+                                        <i class='bx ${getTrendIcon(q.trend)} ${getTrendClass(q.trend)}'></i>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="text-end">
+                                <span class="badge ${getConfidenceBadge(player.confidence)}">
+                                    Confiança: ${player.confidence}%
+                                </span>
+                            </div>
+                        </div>
+                    `).join('');
+                });
+        }
+
+        function updatePredictions() {
+            fetch(`/get_game_predictions/${gameId}`)
+                .then(response => response.json())
+                .then(predictions => {
+                    document.getElementById('predictions').innerHTML = predictions.map(pred => `
+                        <div class="quarter-analysis">
+                            <div class="d-flex justify-content-between">
+                                <strong>${pred.player}</strong>
+                                <span class="confidence-${getConfidenceClass(pred.confidence)}">
+                                    ${pred.confidence}%
+                                </span>
+                            </div>
+                            <div class="mt-2">
+                                <div class="small text-muted">${pred.type}</div>
+                                <div class="h5">${pred.prediction}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                });
+        }
+
+        function getTrendIcon(trend) {
+            return {
+                'up': 'bx-trending-up',
+                'down': 'bx-trending-down',
+                'neutral': 'bx-minus'
+            }[trend] || 'bx-minus';
+        }
+
+        function getTrendClass(trend) {
+            return {
+                'up': 'trend-up',
+                'down': 'trend-down',
+                'neutral': 'trend-neutral'
+            }[trend] || 'trend-neutral';
+        }
+
+        function getConfidenceBadge(confidence) {
+            if (confidence >= 80) return 'bg-success';
+            if (confidence >= 60) return 'bg-warning';
+            return 'bg-danger';
+        }
+
+        function getConfidenceClass(confidence) {
+            if (confidence >= 80) return 'high';
+            if (confidence >= 60) return 'medium';
+            return 'low';
+        }
+
+        // Atualização inicial
+        updateGameData();
+        updatePlayerAnalysis();
+        updatePredictions();
+
+        // Atualização periódica
+        setInterval(updateGameData, 10000);      // A cada 10 segundos
+        setInterval(updatePlayerAnalysis, 30000); // A cada 30 segundos
+        setInterval(updatePredictions, 30000);    // A cada 30 segundos
+    </script>
+</body>
+</html> 

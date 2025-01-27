@@ -1,0 +1,195 @@
+2025-01-23 14:02:46,722 - werkzeug - INFO -  * Restarting with stat
+2025-01-23 14:02:52,600 - werkzeug - WARNING -  * Debugger is active!
+2025-01-23 14:02:52,615 - werkzeug - INFO -  * Debugger PIN: 866-750-210
+2025-01-23 14:02:53,072 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-01-23 14:02:53,072 - werkzeug - INFO -  * Running on http://192.168.0.104:5000/ (Press CTRL+C to quit)
+2025-01-23 14:16:38,934 - werkzeug - INFO -  * Restarting with stat
+2025-01-23 14:16:42,878 - werkzeug - WARNING -  * Debugger is active!
+2025-01-23 14:16:42,889 - werkzeug - INFO -  * Debugger PIN: 866-750-210
+2025-01-23 14:16:43,147 - werkzeug - INFO -  * Running on http://localhost:8080/ (Press CTRL+C to quit)
+2025-01-23 14:19:26,182 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:26] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:19:26,665 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:26] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:19:26,970 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:26] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:19:28,252 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:28] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:19:28,255 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:28] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:19:28,257 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:28] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-01-23 14:19:31,679 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:31] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:19:36,983 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:36] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:19:36,985 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:36] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:19:41,666 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:41] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:19:41,981 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:41] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:19:46,990 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:46] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:19:46,991 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:46] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:19:51,673 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:51] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:19:56,970 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:56] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:19:56,976 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:56] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:19:56,977 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:19:56] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:01,673 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:01] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:07,021 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:07] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:07,068 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:07] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:11,671 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:11] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:11,985 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:11] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:16,969 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:16] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:16,970 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:16] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:18,088 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:18] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:20:18,530 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:18] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:18,535 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:18] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:18,543 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:18] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:18,554 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:18] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:20:23,132 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:23] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:28,444 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:28] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:28,446 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:28] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:33,136 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:33] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:33,448 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:33] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:38,463 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:38] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:38,465 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:38] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:40,544 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:40] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:20:40,899 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:40] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:40,901 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:40] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:40,907 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:40] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:40,910 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:40] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:20:45,593 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:45] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:50,607 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:50] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-01-23 14:20:50,668 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:50] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:20:50,905 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:50] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:20:51,669 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:51] "GET /?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-01-23 14:20:51,977 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:51] "GET /?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-01-23 14:20:52,275 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:52] "GET /?__debugger__=yes&cmd=resource&f=ubuntu.ttf HTTP/1.1" 200 -
+2025-01-23 14:20:52,590 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:52] "GET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-01-23 14:20:52,858 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:20:52] "GET /?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-01-23 14:22:03,043 - werkzeug - INFO -  * Restarting with stat
+2025-01-23 14:22:08,281 - werkzeug - WARNING -  * Debugger is active!
+2025-01-23 14:22:08,307 - werkzeug - INFO -  * Debugger PIN: 866-750-210
+2025-01-23 14:22:08,982 - werkzeug - INFO -  * Running on http://localhost:8080/ (Press CTRL+C to quit)
+2025-01-23 14:22:09,174 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:09] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:22:09,176 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:09] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:09,204 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:09] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:09,268 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:09] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:09,291 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:09] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:09,576 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:09] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:09,582 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:09] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:09,589 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:09] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:22:14,246 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:14] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:19,550 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:19] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:19,552 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:19] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:24,244 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:24] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:24,568 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:24] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:25,591 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:25] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:22:25,846 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:25] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:25,973 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:25] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:25,975 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:25] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:25,977 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:25] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:22:30,667 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:30] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:35,974 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:35] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:35,975 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:35] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:40,661 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:40] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:40,970 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:40] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:45,976 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:45] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:45,977 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:45] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:50,655 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:50] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:53,974 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:53] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:22:54,145 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:54] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:54,368 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:54] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:22:54,403 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:54] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:22:54,408 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:22:54] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:27:27,897 - werkzeug - INFO -  * Restarting with stat
+2025-01-23 14:27:37,202 - werkzeug - WARNING -  * Debugger is active!
+2025-01-23 14:27:37,234 - werkzeug - INFO -  * Debugger PIN: 866-750-210
+2025-01-23 14:27:37,620 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-01-23 14:27:37,620 - werkzeug - INFO -  * Running on http://192.168.0.104:3000/ (Press CTRL+C to quit)
+2025-01-23 14:28:16,072 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:16] "GET / HTTP/1.1" 200 -
+2025-01-23 14:28:16,736 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:16] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-01-23 14:28:21,093 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:21] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:28:21,454 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:21] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:28:21,740 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:21] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:28:21,761 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:21] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:28:21,786 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:21] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:28:28,169 - __main__ - ERROR - Erro ao obter oportunidades: 'OddsHistory' object has no attribute 'get_current_opportunities'
+2025-01-23 14:28:28,170 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:28] "[31m[1mGET /get_opportunities HTTP/1.1[0m" 400 -
+2025-01-23 14:28:32,906 - __main__ - ERROR - Erro ao obter oportunidades: 'OddsHistory' object has no attribute 'get_current_opportunities'
+2025-01-23 14:28:32,907 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:32] "[31m[1mGET /get_opportunities HTTP/1.1[0m" 400 -
+2025-01-23 14:28:36,304 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:36] "GET / HTTP/1.1" 200 -
+2025-01-23 14:28:38,817 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:38] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:28:39,198 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:39] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:28:39,199 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:39] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:28:39,200 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:39] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:28:39,202 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:39] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:28:43,897 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:43] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:28:50,068 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:50] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:28:50,335 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:50] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:28:50,416 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:50] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:28:50,417 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:50] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:28:50,418 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:28:50] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:31:15,713 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:31:15] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:31:16,031 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:31:16] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:31:16,113 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:31:16] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:31:16,157 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:31:16] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:31:16,225 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:31:16] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:36:13,215 - werkzeug - INFO -  * Restarting with stat
+2025-01-23 14:36:17,340 - werkzeug - WARNING -  * Debugger is active!
+2025-01-23 14:36:17,393 - werkzeug - INFO -  * Debugger PIN: 866-750-210
+2025-01-23 14:36:17,686 - werkzeug - WARNING -  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+2025-01-23 14:36:17,687 - werkzeug - INFO -  * Running on http://192.168.0.104:3000/ (Press CTRL+C to quit)
+2025-01-23 14:36:58,786 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:36:58] "GET / HTTP/1.1" 200 -
+2025-01-23 14:36:59,806 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:36:59] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:37:00,107 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:37:00] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:37:31,006 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:37:31] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:37:31,007 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:37:31] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:37:42,306 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:37:42] "GET /analysis/1 HTTP/1.1" 200 -
+2025-01-23 14:37:42,749 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:37:42] "GET /get_game_data/1 HTTP/1.1" 200 -
+2025-01-23 14:37:42,750 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:37:42] "GET /get_game_predictions/1 HTTP/1.1" 200 -
+2025-01-23 14:37:42,751 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:37:42] "GET /get_player_analysis/1 HTTP/1.1" 200 -
+2025-01-23 14:38:12,439 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:12] "GET /get_game_data/1 HTTP/1.1" 200 -
+2025-01-23 14:38:12,749 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:12] "GET /get_player_analysis/1 HTTP/1.1" 200 -
+2025-01-23 14:38:12,752 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:12] "GET /get_game_predictions/1 HTTP/1.1" 200 -
+2025-01-23 14:38:13,128 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:13] "GET / HTTP/1.1" 200 -
+2025-01-23 14:38:13,392 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:13] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:38:13,489 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:13] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:38:15,292 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:15] "GET / HTTP/1.1" 200 -
+2025-01-23 14:38:15,632 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:15] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:38:15,634 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:15] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:38:38,832 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:38] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:38:39,192 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:39] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:38:39,195 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:39] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:38:39,197 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:39] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:38:39,199 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:39] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:38:43,885 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:43] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:38:45,648 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:45] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:38:45,650 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:38:45] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:39:07,686 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:07] "GET / HTTP/1.1" 200 -
+2025-01-23 14:39:08,036 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:08] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:39:08,038 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:08] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:39:10,994 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:10] "GET / HTTP/1.1" 200 -
+2025-01-23 14:39:11,351 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:11] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:39:11,353 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:11] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:39:12,044 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:12] "GET / HTTP/1.1" 200 -
+2025-01-23 14:39:12,397 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:12] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:39:12,401 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:12] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:39:12,769 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:12] "GET / HTTP/1.1" 200 -
+2025-01-23 14:39:13,117 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:13] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:39:13,119 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:13] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:39:14,161 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:14] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:39:14,536 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:14] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:39:14,537 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:14] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:39:14,538 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:14] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:39:14,540 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:14] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:39:19,203 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:19] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:39:24,516 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:24] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:39:24,517 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:24] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:39:29,206 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:29] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:39:29,522 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:29] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:39:42,820 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:42] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:39:43,128 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:39:43] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:40:13,126 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:40:13] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:40:13,128 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:40:13] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:40:42,812 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:40:42] "GET /get_live_games HTTP/1.1" 200 -
+2025-01-23 14:40:43,180 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:40:43] "GET /get_upcoming_games HTTP/1.1" 200 -
+2025-01-23 14:40:50,884 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:40:50] "GET /players HTTP/1.1" 200 -
+2025-01-23 14:40:51,183 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:40:51] "GET /get_sequence_analysis HTTP/1.1" 200 -
+2025-01-23 14:40:51,250 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:40:51] "GET /get_correlation_analysis HTTP/1.1" 200 -
+2025-01-23 14:40:51,289 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:40:51] "GET /get_emotional_states HTTP/1.1" 200 -
+2025-01-23 14:40:51,315 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:40:51] "[33mGET /get_observation_history HTTP/1.1[0m" 404 -
+2025-01-23 14:40:55,926 - werkzeug - INFO - 127.0.0.1 - - [23/Jan/2025 14:40:55] "GET /get_emotional_states HTTP/1.1" 200 -

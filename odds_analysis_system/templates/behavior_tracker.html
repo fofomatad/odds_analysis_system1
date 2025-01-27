@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastreador de Comportamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .observation-card {
+            transition: transform 0.2s;
+            margin-bottom: 1rem;
+        }
+        .observation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .emotional-state {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .emotional-state.positive {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        .emotional-state.negative {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+        .emotional-state.neutral {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+        }
+        .quick-action {
+            margin: 5px;
+            min-width: 120px;
+            transition: all 0.3s;
+        }
+        .quick-action:hover {
+            transform: scale(1.05);
+        }
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">
+                <i class='bx bx-line-chart'></i>
+                Rastreador de Comportamento
+            </span>
+            <div>
+                <a href="/dashboard" class="btn btn-outline-light me-2">Dashboard</a>
+                <a href="/" class="btn btn-outline-light">Início</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Status Rápido -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stat-value" id="total-bets">0</div>
+                    <div class="stat-label">Total de Apostas</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stat-value" id="win-rate">0%</div>
+                    <div class="stat-label">Taxa de Vitória</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stat-value" id="current-streak">0</div>
+                    <div class="stat-label">Sequência Atual</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stat-value" id="emotional-index">Neutro</div>
+                    <div class="stat-label">Estado Emocional</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado Emocional e Ações Rápidas -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Estado Emocional Atual</h5>
+                        <div id="emotional-state" class="emotional-state neutral">
+                            Analisando comportamento...
+                        </div>
+                        <div class="d-flex flex-wrap">
+                            <button class="btn btn-success quick-action" onclick="registerEmotion('positive')">
+                                <i class='bx bx-happy'></i> Positivo
+                            </button>
+                            <button class="btn btn-danger quick-action" onclick="registerEmotion('negative')">
+                                <i class='bx bx-sad'></i> Negativo
+                            </button>
+                            <button class="btn btn-secondary quick-action" onclick="registerEmotion('neutral')">
+                                <i class='bx bx-meh'></i> Neutro
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Ações Rápidas</h5>
+                        <button class="btn btn-warning quick-action w-100 mb-2" onclick="triggerAlert('warning')">
+                            <i class='bx bx-error'></i> Alerta de Risco
+                        </button>
+                        <button class="btn btn-info quick-action w-100 mb-2" onclick="addNote()">
+                            <i class='bx bx-note'></i> Adicionar Nota
+                        </button>
+                        <button class="btn btn-primary quick-action w-100" onclick="refreshStats()">
+                            <i class='bx bx-refresh'></i> Atualizar Dados
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Histórico de Comportamento -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Histórico de Comportamento</h5>
+                <div id="behavior-history" class="list-group">
+                    <!-- Histórico será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateStatus() {
+            fetch('/get_player_stats')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('total-bets').textContent = data.total_bets || 0;
+                    document.getElementById('win-rate').textContent = `${data.win_rate || 0}%`;
+                    document.getElementById('current-streak').textContent = data.current_streak || 0;
+                    updateEmotionalState(data.emotional_state || 'neutral');
+                    updateBehaviorHistory(data.behavior_history || []);
+                })
+                .catch(error => console.error('Erro ao atualizar status:', error));
+        }
+
+        function updateEmotionalState(state) {
+            const emotionalDiv = document.getElementById('emotional-state');
+            emotionalDiv.className = `emotional-state ${state}`;
+            document.getElementById('emotional-index').textContent = 
+                state.charAt(0).toUpperCase() + state.slice(1);
+        }
+
+        function updateBehaviorHistory(history) {
+            const historyDiv = document.getElementById('behavior-history');
+            historyDiv.innerHTML = history.map(item => `
+                <div class="list-group-item observation-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>${item.timestamp}</strong>
+                        <span class="badge ${getBadgeClass(item.type)}">${item.type}</span>
+                    </div>
+                    <p class="mb-1">${item.description}</p>
+                </div>
+            `).join('');
+        }
+
+        function getBadgeClass(type) {
+            const classes = {
+                'positive': 'bg-success',
+                'negative': 'bg-danger',
+                'neutral': 'bg-secondary',
+                'alert': 'bg-warning'
+            };
+            return classes[type] || 'bg-primary';
+        }
+
+        function registerEmotion(emotion) {
+            fetch('/register_emotion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ emotion })
+            }).then(() => updateStatus());
+        }
+
+        function triggerAlert(type) {
+            fetch('/trigger_alert', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ type })
+            }).then(() => updateStatus());
+        }
+
+        function addNote() {
+            const note = prompt('Digite sua observação:');
+            if (note) {
+                fetch('/add_note', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ note })
+                }).then(() => updateStatus());
+            }
+        }
+
+        function refreshStats() {
+            updateStatus();
+        }
+
+        // Inicialização
+        updateStatus();
+        setInterval(updateStatus, 30000);  // Atualiza a cada 30 segundos
+    </script>
+</body>
+</html> 

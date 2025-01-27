@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Analysis Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #1d428a;  /* NBA Blue */
+            --accent-color: #c8102e;   /* NBA Red */
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+
+        .game-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .analysis-section {
+            background: linear-gradient(135deg, rgba(29, 66, 138, 0.05), rgba(200, 16, 46, 0.05));
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .stat-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .confidence-meter {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .player-card {
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .player-card.hot {
+            border-left-color: var(--accent-color);
+        }
+
+        .trend-arrow {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .trend-up { color: var(--success-color); }
+        .trend-down { color: var(--danger-color); }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">NBA Analysis Dashboard</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Games Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="mb-3">Jogos de Hoje</h3>
+                <div id="games-container" class="row">
+                    <!-- Games will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="analysis-section">
+                    <h3 class="mb-3">Análise Holzhauer</h3>
+                    <div id="holzhauer-analysis">
+                        <!-- Analysis will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Analysis -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="mb-3">Análise de Jogadores</h3>
+                <div id="player-analysis" class="row">
+                    <!-- Player analysis will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para carregar jogos
+        function loadGames() {
+            fetch('/nba/games')
+                .then(response => response.json())
+                .then(games => {
+                    const container = document.getElementById('games-container');
+                    container.innerHTML = games.map(game => `
+                        <div class="col-md-4 mb-3">
+                            <div class="card game-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">${game.home_team} vs ${game.away_team}</h5>
+                                    <p class="card-text">
+                                        <small class="text-muted">${game.start_time}</small>
+                                    </p>
+                                    <button class="btn btn-primary btn-sm" 
+                                            onclick="analyzeGame('${game.id}')">
+                                        Analisar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => console.error('Erro ao carregar jogos:', error));
+        }
+
+        // Função para analisar jogo
+        function analyzeGame(gameId) {
+            fetch(`/nba/analyze/${gameId}`)
+                .then(response => response.json())
+                .then(analysis => {
+                    updateAnalysisSection(analysis);
+                    updatePlayerAnalysis(analysis.player_analysis);
+                })
+                .catch(error => console.error('Erro ao analisar jogo:', error));
+        }
+
+        // Função para atualizar seção de análise
+        function updateAnalysisSection(analysis) {
+            const container = document.getElementById('holzhauer-analysis');
+            container.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Score Holzhauer</h5>
+                        <div class="confidence-meter mb-3">
+                            <div class="progress-bar" 
+                                 style="width: ${analysis.holzhauer_score * 100}%"></div>
+                        </div>
+                        <div class="recommendations">
+                            ${analysis.recommendations.map(rec => `
+                                <div class="recommendation-item mb-2">
+                                    <span class="stat-badge ${rec.confidence}">
+                                        ${rec.confidence.toUpperCase()}
+                                    </span>
+                                    ${rec.description}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Fatores Chave</h5>
+                        ${Object.entries(analysis.situation_analysis).map(([key, value]) => `
+                            <div class="factor-item mb-2">
+                                <strong>${key}:</strong> ${value}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Função para atualizar análise de jogadores
+        function updatePlayerAnalysis(playerAnalysis) {
+            const container = document.getElementById('player-analysis');
+            container.innerHTML = Object.entries(playerAnalysis).map(([player, analysis]) => `
+                <div class="col-md-4 mb-3">
+                    <div class="card player-card ${analysis.form_rating > 0.7 ? 'hot' : ''}">
+                        <div class="card-body">
+                            <h5 class="card-title">${player}</h5>
+                            <p class="mb-1">
+                                <span class="stat-badge">
+                                    ${analysis.impact_category.toUpperCase()}
+                                </span>
+                            </p>
+                            <div class="stats-container">
+                                <div class="stat-item">
+                                    <small>Forma:</small>
+                                    <div class="confidence-meter">
+                                        <div class="progress-bar" 
+                                             style="width: ${analysis.form_rating * 100}%"></div>
+                                    </div>
+                                </div>
+                                <div class="stat-item">
+                                    <small>Vantagem:</small>
+                                    <span class="trend-arrow ${analysis.matchup_advantage > 0 ? 'trend-up' : 'trend-down'}">
+                                        ${analysis.matchup_advantage > 0 ? '↑' : '↓'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Carrega jogos ao iniciar
+        document.addEventListener('DOMContentLoaded', loadGames);
+
+        // Atualiza a cada 30 segundos
+        setInterval(loadGames, 30000);
+    </script>
+</body>
+</html> 
