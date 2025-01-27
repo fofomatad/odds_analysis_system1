@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Live Stats - Estratégia Holzhauer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .card {
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .live-game {
+            background: linear-gradient(135deg, #FF4B2B 0%, #FF416C 100%);
+            color: white;
+        }
+        .player-card {
+            transition: transform 0.3s ease;
+        }
+        .player-card:hover {
+            transform: translateY(-5px);
+        }
+        .trend-up {
+            color: #28a745;
+        }
+        .trend-down {
+            color: #dc3545;
+        }
+        .confidence-high {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        .confidence-medium {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+            color: white;
+        }
+        .confidence-low {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+        .quarter-stats {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .prediction-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .high-value-target {
+            border: 2px solid #28a745;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+        .strategy-aggressive {
+            border-left: 5px solid #28a745;
+        }
+        .strategy-conservative {
+            border-left: 5px solid #ffc107;
+        }
+        .explosion-prediction {
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px #ff4d4d,
+                            0 0 10px #ff4d4d,
+                            0 0 15px #ff4d4d;
+            }
+            to {
+                box-shadow: 0 0 10px #ff4d4d,
+                            0 0 20px #ff4d4d,
+                            0 0 30px #ff4d4d;
+            }
+        }
+        .explosion-details {
+            font-size: 0.9em;
+        }
+        .triggers .badge {
+            font-size: 0.8em;
+            padding: 0.3em 0.6em;
+            margin-bottom: 0.2em;
+        }
+        .matchup-analysis .card {
+            border: none;
+            border-radius: 10px;
+        }
+        .matchup-analysis .pattern-item,
+        .matchup-analysis .factor-item {
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .matchup-analysis .badge {
+            font-size: 0.8em;
+            padding: 0.3em 0.6em;
+        }
+        .matchup-analysis .progress {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .matchup-analysis small {
+            font-size: 0.85em;
+        }
+        .matchup-details {
+            font-size: 0.9em;
+        }
+        .mood-analysis .card {
+            border: none;
+            border-radius: 10px;
+        }
+        .mood-details {
+            font-size: 0.9em;
+        }
+        .event-item,
+        .interaction-item,
+        .factor-item {
+            display: inline-block;
+            margin-right: 8px;
+            margin-bottom: 4px;
+        }
+        .mood-analysis .progress {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .mood-analysis .badge {
+            font-size: 0.8em;
+            padding: 0.3em 0.6em;
+        }
+        .emotional-factors {
+            margin-top: 8px;
+        }
+        .emotional-factors .factor-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        .odds-validation .card {
+            border: none;
+            border-radius: 10px;
+        }
+        .odds-validation .alert {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            font-size: 0.9em;
+        }
+        .odds-validation .badge {
+            font-size: 0.8em;
+            padding: 0.3em 0.6em;
+        }
+        .injury-impact {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+        .affected-stats .badge {
+            font-size: 0.75em;
+            padding: 0.2em 0.5em;
+        }
+        .risk-level .progress {
+            margin: 0.3rem 0;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1">NBA Live Stats - Estratégia Holzhauer</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Jogos ao Vivo -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="mb-3">Jogos em Andamento</h3>
+                {% for game in live_games %}
+                <div class="card live-game">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <h4>{{ game.home_team }} vs {{ game.away_team }}</h4>
+                                <p class="mb-0">Quarter: {{ game.current_quarter }} | {{ game.time_remaining }}</p>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <h2>{{ game.home_score }} - {{ game.away_score }}</h2>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <p class="mb-0">Ritmo: {{ game.pace }}</p>
+                                <p class="mb-0">Total: {{ game.total_points }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Análise de Jogadores -->
+        <div class="row mb-4">
+            {% for player in player_stats %}
+            <div class="col-md-6">
+                <div class="card player-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>{{ player.name }}</h5>
+                        <span class="badge {{ 'bg-success' if player.hot_streak else 'bg-secondary' }}">
+                            {{ 'HOT 🔥' if player.hot_streak else 'NORMAL' }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6>Pontos</h6>
+                                <div class="quarter-stats">
+                                    {% for q in range(1, 5) %}
+                                    <div class="{{ 'high-value-target' if q in player.high_value_quarters }}">
+                                        Q{{ q }}: {{ player.points[f'q{q}'] }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <p class="trend-{{ player.points.trend }}">
+                                    Total: {{ player.points.total }}
+                                    <small>({{ player.points.trend_text }})</small>
+                                </p>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Assistências</h6>
+                                <div class="quarter-stats">
+                                    {% for q in range(1, 5) %}
+                                    <div class="{{ 'high-value-target' if q in player.high_value_quarters }}">
+                                        Q{{ q }}: {{ player.assists[f'q{q}'] }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <p class="trend-{{ player.assists.trend }}">
+                                    Total: {{ player.assists.total }}
+                                    <small>({{ player.assists.trend_text }})</small>
+                                </p>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Rebotes</h6>
+                                <div class="quarter-stats">
+                                    {% for q in range(1, 5) %}
+                                    <div class="{{ 'high-value-target' if q in player.high_value_quarters }}">
+                                        Q{{ q }}: {{ player.rebounds[f'q{q}'] }}
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <p class="trend-{{ player.rebounds.trend }}">
+                                    Total: {{ player.rebounds.total }}
+                                    <small>({{ player.rebounds.trend_text }})</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Previsões Holzhauer -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="mb-3">Previsões Holzhauer</h3>
+                {% for prediction in predictions %}
+                <div class="card prediction-card">
+                    <div class="card-body">
+                        <h5>{{ prediction.player_name }}</h5>
+                        <div class="row">
+                            {% for quarter in prediction.quarters %}
+                            <div class="col-md-3">
+                                <div class="card {{ 'strategy-aggressive' if quarter.estratégia == 'aggressive' else 'strategy-conservative' }}">
+                                    <div class="card-body">
+                                        <h6>Quarter {{ quarter.number }}</h6>
+                                        <p class="mb-0">
+                                            Pontos: {{ "%.1f"|format(quarter.points) }}<br>
+                                            Assists: {{ "%.1f"|format(quarter.assists) }}<br>
+                                            Rebotes: {{ "%.1f"|format(quarter.rebounds) }}
+                                        </p>
+                                        <div class="progress mt-2">
+                                            <div class="progress-bar {{ 'bg-success' if quarter.confidence > 0.8 else 'bg-warning' }}"
+                                                 role="progressbar"
+                                                 style="width: {{ quarter.confidence * 100 }}%">
+                                                {{ "%.0f"|format(quarter.confidence * 100) }}%
+                                            </div>
+                                        </div>
+                                        <small class="text-white">{{ quarter.estratégia|title }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Oportunidades de Valor (Estilo Holzhauer) -->
+        <div class="row">
+            <div class="col-12">
+                <h3 class="mb-4">Oportunidades Prime (Holzhauer)</h3>
+                {% for prop in value_props %}
+                <div class="card {{ 'strategy-aggressive' if prop.estratégia.recomendação == 'max_bet' else 'strategy-conservative' }}">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <h5>{{ prop.player_name }}</h5>
+                                <p class="mb-0">{{ prop.stat_type }}</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0">
+                                    <strong>Linha:</strong> {{ prop.line }}<br>
+                                    <strong>Odds:</strong> {{ "%.2f"|format(prop.odds) }}
+                                </p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0">
+                                    <strong>Média 10j:</strong> {{ "%.1f"|format(prop.análise.média_últimos_10) }}<br>
+                                    <strong>Tendência:</strong> 
+                                    <span class="trend-{{ 'up' if prop.recomendação == 'over' else 'down' }}">
+                                        {{ prop.análise.tendência }}
+                                    </span>
+                                </p>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <!-- Indicador de Momento -->
+                                <div class="momentum-indicator mb-2">
+                                    <small class="text-muted">Momento do Jogo</small>
+                                    <div class="progress" style="height: 5px;">
+                                        <div class="progress-bar {{ 'bg-success' if prop.momento.overall_factor > 1.2 else 'bg-warning' if prop.momento.overall_factor > 0.8 else 'bg-danger' }}"
+                                             role="progressbar"
+                                             style="width: {{ prop.momento.overall_factor * 66.67 }}%">
+                                        </div>
+                                    </div>
+                                    <div class="momentum-details">
+                                        <small class="me-2">
+                                            <i class="fas fa-chart-line"></i>
+                                            {{ "%.1f"|format(prop.momento.score_momentum) }}
+                                        </small>
+                                        <small class="me-2">
+                                            <i class="fas fa-running"></i>
+                                            {{ "%.1f"|format(prop.momento.pace_momentum) }}
+                                        </small>
+                                        <small>
+                                            <i class="fas fa-clock"></i>
+                                            {{ "%.0f"|format(prop.momento.time_pressure * 100) }}%
+                                        </small>
+                                    </div>
+                                </div>
+                                <h4 class="text-{{ 'success' if prop.confiança > 0.8 else 'warning' }}">
+                                    {{ prop.recomendação.upper() }}
+                                    ({{ "%.0f"|format(prop.confiança * 100) }}%)
+                                </h4>
+                                <small>{{ prop.estratégia.razão }}</small>
+
+                                <!-- Previsão de Explosão -->
+                                {% if prop.momentum_shift and prop.momentum_shift.scoring_explosion_probability > 0.6 %}
+                                <div class="explosion-prediction mt-3">
+                                    <div class="alert alert-warning" role="alert">
+                                        <h6 class="mb-1">
+                                            <i class="fas fa-fire-alt"></i>
+                                            Explosão de Pontuação Iminente!
+                                        </h6>
+                                        <div class="explosion-details">
+                                            <small class="d-block">
+                                                Probabilidade: {{ "%.0f"|format(prop.momentum_shift.scoring_explosion_probability * 100) }}%
+                                            </small>
+                                            <small class="d-block">
+                                                Confiança: {{ "%.0f"|format(prop.momentum_shift.confidence_level * 100) }}%
+                                            </small>
+                                            <div class="triggers mt-2">
+                                                {% for trigger in prop.momentum_shift.trigger_conditions %}
+                                                <span class="badge bg-info me-1">
+                                                    {{ trigger.tipo|replace('_', ' ')|title }}
+                                                </span>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <!-- Análise de Matchup -->
+                                {% if prop.matchup_analysis %}
+                                <div class="matchup-analysis mt-3">
+                                    <div class="card {{ 'bg-success' if prop.matchup_analysis.vantagem_ofensiva > 0.6 else 'bg-warning' }} text-white">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                <i class="fas fa-user-vs-user"></i>
+                                                Análise de Confronto Direto
+                                            </h6>
+                                            <div class="matchup-details">
+                                                <!-- Vantagem Ofensiva -->
+                                                <div class="progress mb-2" style="height: 5px;">
+                                                    <div class="progress-bar bg-white"
+                                                         role="progressbar"
+                                                         style="width: {{ prop.matchup_analysis.vantagem_ofensiva * 100 }}%">
+                                                    </div>
+                                                </div>
+                                                <small class="d-block mb-2">
+                                                    Vantagem Ofensiva: {{ "%.0f"|format(prop.matchup_analysis.vantagem_ofensiva * 100) }}%
+                                                </small>
+                                                
+                                                <!-- Padrões Identificados -->
+                                                <div class="patterns-container">
+                                                    {% for pattern in prop.matchup_analysis.padrões_identificados %}
+                                                    <div class="pattern-item mb-1">
+                                                        <span class="badge bg-white text-dark me-1">
+                                                            {{ pattern.tipo|replace('_', ' ')|title }}
+                                                        </span>
+                                                        {% if pattern.eficiência %}
+                                                        <small class="text-white">
+                                                            ({{ "%.0f"|format(pattern.eficiência * 100) }}%)
+                                                        </small>
+                                                        {% endif %}
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                
+                                                <!-- Fatores-Chave -->
+                                                <div class="key-factors mt-2">
+                                                    {% for factor in prop.matchup_analysis.fatores_chave %}
+                                                    <div class="factor-item">
+                                                        <small class="text-white">
+                                                            <i class="fas fa-star"></i>
+                                                            {{ factor.tipo|replace('_', ' ')|title }}
+                                                            ({{ "%.0f"|format(factor.impacto * 100) }}%)
+                                                        </small>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                
+                                                <!-- Confiança -->
+                                                <div class="confidence-meter mt-2">
+                                                    <div class="progress" style="height: 3px;">
+                                                        <div class="progress-bar bg-white"
+                                                             role="progressbar"
+                                                             style="width: {{ prop.matchup_analysis.confiança_matchup * 100 }}%">
+                                                        </div>
+                                                    </div>
+                                                    <small class="text-white">
+                                                        Confiança: {{ "%.0f"|format(prop.matchup_analysis.confiança_matchup * 100) }}%
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <!-- Análise de Humor -->
+                                {% if prop.mood_analysis %}
+                                <div class="mood-analysis mt-3">
+                                    <div class="card {{ 'bg-success' if prop.mood_analysis.humor_geral > 0.6 else 'bg-danger' if prop.mood_analysis.humor_geral < 0.4 else 'bg-warning' }} text-white">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                <i class="fas fa-brain"></i>
+                                                Análise Emocional
+                                            </h6>
+                                            <div class="mood-details">
+                                                <!-- Humor Geral -->
+                                                <div class="progress mb-2" style="height: 5px;">
+                                                    <div class="progress-bar bg-white"
+                                                         role="progressbar"
+                                                         style="width: {{ prop.mood_analysis.humor_geral * 100 }}%">
+                                                    </div>
+                                                </div>
+                                                <small class="d-block mb-2">
+                                                    Humor: {{ "%.0f"|format(prop.mood_analysis.humor_geral * 100) }}%
+                                                </small>
+                                                
+                                                <!-- Eventos Recentes -->
+                                                {% if prop.mood_analysis.eventos_recentes %}
+                                                <div class="recent-events mb-2">
+                                                    <small class="text-white-50">Eventos Recentes:</small>
+                                                    {% for evento in prop.mood_analysis.eventos_recentes %}
+                                                    <div class="event-item">
+                                                        <span class="badge {{ 'bg-success' if evento.impacto > 0 else 'bg-danger' }} me-1">
+                                                            {{ evento.tipo|replace('_', ' ')|title }}
+                                                        </span>
+                                                        <small class="text-white-50">
+                                                            ({{ "%.0f"|format(abs(evento.impacto) * 100) }}% impacto)
+                                                        </small>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- Interações do Jogo -->
+                                                {% if prop.mood_analysis.interações_jogo %}
+                                                <div class="game-interactions mb-2">
+                                                    <small class="text-white-50">Interações no Jogo:</small>
+                                                    {% for interação in prop.mood_analysis.interações_jogo %}
+                                                    <div class="interaction-item">
+                                                        <span class="badge bg-info me-1">
+                                                            {{ interação.tipo|replace('_', ' ')|title }}
+                                                            ({{ interação.momento }})
+                                                        </span>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                {% endif %}
+                                                
+                                                <!-- Fatores Emocionais -->
+                                                <div class="emotional-factors">
+                                                    {% for fator in prop.mood_analysis.fatores_emocionais %}
+                                                    <div class="factor-item">
+                                                        <small class="text-white">
+                                                            <i class="fas fa-{{ 'arrow-up' if fator.intensidade > 0.5 else 'arrow-down' }}"></i>
+                                                            {{ fator.tipo|replace('_', ' ')|title }}
+                                                            ({{ "%.0f"|format(fator.intensidade * 100) }}%)
+                                                        </small>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                                
+                                                <!-- Impacto Previsto -->
+                                                <div class="predicted-impact mt-2">
+                                                    <div class="progress" style="height: 3px;">
+                                                        <div class="progress-bar bg-white"
+                                                             role="progressbar"
+                                                             style="width: {{ prop.mood_analysis.impacto_previsto * 100 }}%">
+                                                        </div>
+                                                    </div>
+                                                    <small class="text-white">
+                                                        Impacto Previsto: {{ "%.0f"|format(prop.mood_analysis.impacto_previsto * 100) }}%
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                <!-- Validação de Odds e Lesões -->
+                                {% if prop.odds_validation %}
+                                <div class="odds-validation mt-3">
+                                    <div class="card {{ 'bg-danger' if not prop.odds_validation.odds_válida else 'bg-success' if not prop.odds_validation.impacto_físico else 'bg-warning' }} text-white">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                <i class="fas fa-shield-alt"></i>
+                                                Validação de Odds & Condição Física
+                                            </h6>
+                                            
+                                            <!-- Status da Odds -->
+                                            {% if not prop.odds_validation.odds_válida %}
+                                            <div class="alert alert-danger">
+                                                <strong>Odds Suspeita:</strong> {{ prop.odds_validation.razão_invalidação }}
+                                            </div>
+                                            {% endif %}
+                                            
+                                            <!-- Alertas -->
+                                            {% if prop.odds_validation.alertas %}
+                                            <div class="alerts-container mb-2">
+                                                {% for alerta in prop.odds_validation.alertas %}
+                                                <div class="alert alert-warning mb-1 py-1">
+                                                    <small>
+                                                        <strong>{{ alerta.tipo|replace('_', ' ')|title }}:</strong>
+                                                        {{ alerta.descrição }}
+                                                    </small>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                            
+                                            <!-- Impacto de Lesão -->
+                                            {% if prop.odds_validation.impacto_físico %}
+                                            <div class="injury-impact">
+                                                <div class="impact-header d-flex justify-content-between align-items-center">
+                                                    <strong>Impacto da Lesão:</strong>
+                                                    <span class="badge bg-danger">
+                                                        -{{ "%.0f"|format(prop.odds_validation.impacto_físico.redução_esperada * 100) }}%
+                                                    </span>
+                                                </div>
+                                                
+                                                <!-- Estatísticas Afetadas -->
+                                                <div class="affected-stats mt-2">
+                                                    <small class="text-white-50">Estatísticas Afetadas:</small>
+                                                    <div class="stats-badges">
+                                                        {% for stat in prop.odds_validation.impacto_físico.estatísticas_afetadas %}
+                                                        <span class="badge bg-light text-dark me-1">
+                                                            {{ stat|title }}
+                                                        </span>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Nível de Risco -->
+                                                <div class="risk-level mt-2">
+                                                    <small class="text-white-50">Nível de Risco:</small>
+                                                    <div class="progress" style="height: 4px;">
+                                                        <div class="progress-bar bg-danger"
+                                                             role="progressbar"
+                                                             style="width: {{ prop.odds_validation.impacto_físico.nível_risco * 100 }}%">
+                                                        </div>
+                                                    </div>
+                                                    <small class="text-white">
+                                                        {{ "%.0f"|format(prop.odds_validation.impacto_físico.nível_risco * 100) }}%
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            
+                                            <!-- Ajuste de Confiança -->
+                                            {% if prop.odds_validation.ajuste_confiança != 0 %}
+                                            <div class="confidence-adjustment mt-2">
+                                                <small class="text-white-50">Ajuste na Confiança:</small>
+                                                <span class="badge bg-{{ 'danger' if prop.odds_validation.ajuste_confiança < 0 else 'success' }}">
+                                                    {{ "%.0f"|format(prop.odds_validation.ajuste_confiança * 100) }}%
+                                                </span>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Análise de Padrões de Recuperação -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h3 class="mb-3">Padrões de Recuperação</h3>
+                {% for player in player_stats %}
+                {% if player.recovery_analysis %}
+                <div class="card mb-3">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ player.name }}</h5>
+                        <div class="resilience-score">
+                            <span class="badge {{ 'bg-success' if player.recovery_analysis.índice_resiliência > 0.7 else 'bg-warning' if player.recovery_analysis.índice_resiliência > 0.4 else 'bg-danger' }}">
+                                Resiliência: {{ "%.0f"|format(player.recovery_analysis.índice_resiliência * 100) }}%
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Fatores de Resiliência -->
+                        <div class="resilience-factors mb-4">
+                            <h6>Fatores de Resiliência</h6>
+                            <div class="row">
+                                {% for factor in player.recovery_analysis.fatores_resiliência %}
+                                <div class="col-md-3">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ factor.tipo|replace('_', ' ')|title }}</h6>
+                                            <div class="progress mb-2">
+                                                <div class="progress-bar {{ 'bg-success' if factor.valor > 0.7 else 'bg-warning' if factor.valor > 0.4 else 'bg-danger' }}"
+                                                     role="progressbar"
+                                                     style="width: {{ factor.valor * 100 }}%">
+                                                    {{ "%.0f"|format(factor.valor * 100) }}%
+                                                </div>
+                                            </div>
+                                            <small class="text-muted">
+                                                Confiança: {{ "%.0f"|format(factor.confiança * 100) }}%
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Padrões de Recuperação -->
+                        <div class="recovery-patterns mb-4">
+                            <h6>Padrões Identificados</h6>
+                            <div class="row">
+                                {% for pattern in player.recovery_analysis.padrões_recuperação %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ pattern.tipo|replace('_', ' ')|title }}</h6>
+                                            <ul class="list-unstyled mb-0">
+                                                <li>
+                                                    <small>
+                                                        <strong>Duração Média:</strong>
+                                                        {{ pattern.duração_média }} dias
+                                                    </small>
+                                                </li>
+                                                <li>
+                                                    <small>
+                                                        <strong>Taxa de Sucesso:</strong>
+                                                        {{ "%.0f"|format(pattern.taxa_sucesso * 100) }}%
+                                                    </small>
+                                                </li>
+                                                {% if pattern.fatores_chave %}
+                                                <li>
+                                                    <small>
+                                                        <strong>Fatores-Chave:</strong>
+                                                        {% for fator in pattern.fatores_chave %}
+                                                        <span class="badge bg-info me-1">{{ fator }}</span>
+                                                        {% endfor %}
+                                                    </small>
+                                                </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Previsão de Recuperação -->
+                        {% if player.recovery_analysis.previsão_recuperação %}
+                        <div class="recovery-prediction">
+                            <h6>Previsão de Recuperação</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="card {{ 'bg-success' if player.recovery_analysis.previsão_recuperação.confiança_previsão > 0.7 else 'bg-warning' }} text-white">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Tempo Estimado</h6>
+                                            <p class="display-4 mb-0">
+                                                {{ player.recovery_analysis.previsão_recuperação.tempo_estimado }}
+                                                <small>dias</small>
+                                            </p>
+                                            <small>
+                                                Confiança: {{ "%.0f"|format(player.recovery_analysis.previsão_recuperação.confiança_previsão * 100) }}%
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Fatores de Risco -->
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Fatores de Risco</h6>
+                                            {% if player.recovery_analysis.previsão_recuperação.fatores_risco %}
+                                            <ul class="list-unstyled mb-0">
+                                                {% for risk in player.recovery_analysis.previsão_recuperação.fatores_risco %}
+                                                <li class="mb-2">
+                                                    <span class="badge {{ 'bg-danger' if risk.severidade == 'alta' else 'bg-warning' }} me-2">
+                                                        {{ risk.severidade|title }}
+                                                    </span>
+                                                    <small>{{ risk.descrição }}</small>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% else %}
+                                            <p class="text-muted mb-0">
+                                                <small>Nenhum fator de risco identificado</small>
+                                            </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Recomendações -->
+                                <div class="col-md-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Recomendações</h6>
+                                            {% if player.recovery_analysis.previsão_recuperação.recomendações %}
+                                            <ul class="list-unstyled mb-0">
+                                                {% for rec in player.recovery_analysis.previsão_recuperação.recomendações %}
+                                                <li class="mb-2">
+                                                    <span class="badge {{ 'bg-danger' if rec.prioridade == 'alta' else 'bg-warning' }} me-2">
+                                                        {{ rec.prioridade|title }}
+                                                    </span>
+                                                    <small>{{ rec.descrição }}</small>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% else %}
+                                            <p class="text-muted mb-0">
+                                                <small>Nenhuma recomendação específica</small>
+                                            </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Atualização automática a cada 30 segundos
+        setInterval(function() {
+            location.reload();
+        }, 30000);
+    </script>
+</body>
+</html> 

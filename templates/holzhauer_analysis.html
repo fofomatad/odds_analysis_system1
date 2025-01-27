@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Holzhauer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        .game-card {
+            transition: transform 0.2s;
+            margin-bottom: 1rem;
+        }
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .confidence-high {
+            color: #28a745;
+        }
+        .confidence-medium {
+            color: #ffc107;
+        }
+        .confidence-low {
+            color: #dc3545;
+        }
+        .quarter-stats {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+            background: #f8f9fa;
+        }
+        .trend-up {
+            color: #28a745;
+        }
+        .trend-down {
+            color: #dc3545;
+        }
+        .trend-neutral {
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">
+                <i class='bx bx-line-chart'></i>
+                Análise Holzhauer
+            </span>
+            <div>
+                <a href="/dashboard" class="btn btn-outline-light me-2">Dashboard</a>
+                <a href="/" class="btn btn-outline-light">Início</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Jogos ao Vivo -->
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Jogos ao Vivo</h5>
+            </div>
+            <div class="card-body">
+                <div id="live-games" class="row">
+                    <!-- Será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Próximos Jogos -->
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">Próximos Jogos</h5>
+            </div>
+            <div class="card-body">
+                <div id="upcoming-games" class="row">
+                    <!-- Será preenchido via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateLiveGames() {
+            fetch('/get_live_games')
+                .then(response => response.json())
+                .then(games => {
+                    const liveGamesDiv = document.getElementById('live-games');
+                    liveGamesDiv.innerHTML = games.map(game => `
+                        <div class="col-md-6 mb-3">
+                            <div class="game-card card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5>${game.home_team} vs ${game.away_team}</h5>
+                                        <span class="badge bg-primary">${game.quarter}Q ${game.time}</span>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <div class="stat-card">
+                                                <div class="stat-value">${game.home_score}</div>
+                                                <div class="stat-label">${game.home_team}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="stat-card">
+                                                <div class="stat-value">${game.away_score}</div>
+                                                <div class="stat-label">${game.away_team}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="highlights">
+                                        ${game.highlights.map(player => `
+                                            <div class="quarter-stats">
+                                                <strong>${player.name}</strong>
+                                                <div class="small text-muted">${player.stats}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <button class="btn btn-primary mt-3 w-100" onclick="showGameAnalysis('${game.id}')">
+                                        Análise Detalhada
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                });
+        }
+
+        function updateUpcomingGames() {
+            fetch('/get_upcoming_games')
+                .then(response => response.json())
+                .then(games => {
+                    const upcomingGamesDiv = document.getElementById('upcoming-games');
+                    upcomingGamesDiv.innerHTML = games.map(game => `
+                        <div class="col-md-6 mb-3">
+                            <div class="game-card card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5>${game.home_team} vs ${game.away_team}</h5>
+                                        <span class="badge bg-success">${game.date} ${game.time}</span>
+                                    </div>
+                                    <div class="predictions">
+                                        ${game.predictions.map(pred => `
+                                            <div class="quarter-stats">
+                                                <div class="d-flex justify-content-between">
+                                                    <strong>${pred.player}</strong>
+                                                    <span class="confidence-${pred.confidence_class}">
+                                                        ${pred.confidence}%
+                                                    </span>
+                                                </div>
+                                                <div class="small">
+                                                    ${pred.type}: ${pred.prediction}
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <button class="btn btn-success mt-3 w-100" onclick="showPregameAnalysis('${game.id}')">
+                                        Análise Pré-Jogo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                });
+        }
+
+        function showGameAnalysis(gameId) {
+            window.location.href = `/analysis/${gameId}`;
+        }
+
+        function showPregameAnalysis(gameId) {
+            window.location.href = `/pregame/${gameId}`;
+        }
+
+        // Atualização inicial
+        updateLiveGames();
+        updateUpcomingGames();
+
+        // Atualização periódica
+        setInterval(updateLiveGames, 30000);  // A cada 30 segundos
+        setInterval(updateUpcomingGames, 60000);  // A cada minuto
+    </script>
+</body>
+</html> 
