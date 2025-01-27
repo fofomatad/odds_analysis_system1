@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Jogo - Odds Analysis System</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+            --background-color: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            min-height: 300px;
+        }
+
+        .team-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .score-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .quarter-indicator {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .stat-card {
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .trend-up {
+            color: var(--success-color);
+        }
+
+        .trend-down {
+            color: var(--danger-color);
+        }
+
+        .player-performance {
+            height: 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-chart-line me-2"></i>
+                Análise de Jogo
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/nba-dashboard"><i class="fas fa-basketball-ball me-1"></i> NBA</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/player-dashboard"><i class="fas fa-user me-1"></i> Jogadores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/holzhauer"><i class="fas fa-brain me-1"></i> Holzhauer</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid py-4">
+        <!-- Game Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 text-center">
+                                <img src="" id="team1-logo" class="team-logo mb-2" alt="Time 1">
+                                <h3 id="team1-name">Time 1</h3>
+                                <div class="score-display" id="team1-score">0</div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="quarter-indicator mb-2" id="game-time">1Q 12:00</div>
+                                <div class="h5 mb-3">VS</div>
+                                <button class="btn btn-primary" id="refresh-btn">
+                                    <i class="fas fa-sync-alt me-2"></i>Atualizar
+                                </button>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <img src="" id="team2-logo" class="team-logo mb-2" alt="Time 2">
+                                <h3 id="team2-name">Time 2</h3>
+                                <div class="score-display" id="team2-score">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Progressão do Placar</h5>
+                        <div class="chart-container" id="score-progression-chart">
+                            <!-- Plotly chart will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Distribuição de Pontos por Quarter</h5>
+                        <div class="chart-container" id="quarter-distribution-chart">
+                            <!-- Plotly chart will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0" id="team1-stats-title">Time 1 - Estatísticas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="team1-stats-container">
+                            <!-- Team 1 stats will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0" id="team2-stats-title">Time 2 - Estatísticas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row" id="team2-stats-container">
+                            <!-- Team 2 stats will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Performance -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Performance dos Jogadores</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Jogador</th>
+                                        <th>PTS</th>
+                                        <th>AST</th>
+                                        <th>REB</th>
+                                        <th>EFF</th>
+                                        <th>+/-</th>
+                                        <th>Tendência</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="players-table">
+                                    <!-- Player stats will be dynamically added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        // Obter ID do jogo da URL
+        const gameId = window.location.pathname.split('/').pop();
+
+        // Função para criar card de estatística
+        function createStatCard(stat) {
+            return `
+                <div class="col-6 mb-3">
+                    <div class="card stat-card">
+                        <div class="card-body text-center">
+                            <h3 class="mb-0">${stat.value}</h3>
+                            <small class="text-muted">${stat.label}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Função para criar linha de jogador
+        function createPlayerRow(player) {
+            const trendIcon = player.trend > 0 
+                ? '<i class="fas fa-arrow-up trend-up"></i>' 
+                : '<i class="fas fa-arrow-down trend-down"></i>';
+            
+            return `
+                <tr>
+                    <td>${player.name}</td>
+                    <td>${player.points}</td>
+                    <td>${player.assists}</td>
+                    <td>${player.rebounds}</td>
+                    <td>${player.efficiency}</td>
+                    <td>${player.plusMinus}</td>
+                    <td>
+                        ${trendIcon}
+                        <div class="progress player-performance mt-1">
+                            <div class="progress-bar" style="width: ${player.performance}%"></div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Função para atualizar dados
+        function updateGameData() {
+            fetch(`/api/game-data/${gameId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Atualizar informações do cabeçalho
+                    document.getElementById('team1-logo').src = data.team1.logo;
+                    document.getElementById('team2-logo').src = data.team2.logo;
+                    document.getElementById('team1-name').textContent = data.team1.name;
+                    document.getElementById('team2-name').textContent = data.team2.name;
+                    document.getElementById('team1-score').textContent = data.team1.score;
+                    document.getElementById('team2-score').textContent = data.team2.score;
+                    document.getElementById('game-time').textContent = `${data.quarter}Q ${data.time}`;
+
+                    // Atualizar gráficos
+                    Plotly.newPlot('score-progression-chart', data.score_progression);
+                    Plotly.newPlot('quarter-distribution-chart', data.quarter_distribution);
+
+                    // Atualizar estatísticas das equipes
+                    document.getElementById('team1-stats-title').textContent = `${data.team1.name} - Estatísticas`;
+                    document.getElementById('team2-stats-title').textContent = `${data.team2.name} - Estatísticas`;
+
+                    const team1Stats = document.getElementById('team1-stats-container');
+                    const team2Stats = document.getElementById('team2-stats-container');
+
+                    team1Stats.innerHTML = data.team1.stats.map(createStatCard).join('');
+                    team2Stats.innerHTML = data.team2.stats.map(createStatCard).join('');
+
+                    // Atualizar tabela de jogadores
+                    const playersTable = document.getElementById('players-table');
+                    playersTable.innerHTML = data.players.map(createPlayerRow).join('');
+                });
+        }
+
+        // Configurar botão de atualização
+        document.getElementById('refresh-btn').addEventListener('click', updateGameData);
+
+        // Inicializar dados e configurar atualizações automáticas
+        updateGameData();
+        setInterval(updateGameData, 10000);
+    </script>
+</body>
+</html>
