@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Jogadores - Odds Analysis System</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--background-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .player-card {
+            transition: transform 0.3s ease;
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-badge {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 15px;
+        }
+
+        .chart-container {
+            min-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-chart-line me-2"></i>
+                Odds Analysis System
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-home me-1"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/nba-dashboard"><i class="fas fa-basketball-ball me-1"></i> NBA</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/player-dashboard"><i class="fas fa-user me-1"></i> Jogadores</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/holzhauer"><i class="fas fa-brain me-1"></i> Holzhauer</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid py-4">
+        <!-- Search and Filters -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="player-search" placeholder="Buscar jogador...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" id="stat-filter">
+                    <option value="all">Todas as Estatísticas</option>
+                    <option value="points">Pontos</option>
+                    <option value="assists">Assistências</option>
+                    <option value="rebounds">Rebotes</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Player Stats Overview -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Visão Geral dos Jogadores</h5>
+                        <div class="chart-container" id="player-overview-chart">
+                            <!-- Plotly chart will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Cards -->
+        <div class="row" id="player-cards-container">
+            <!-- Player cards will be dynamically added here -->
+        </div>
+
+        <!-- Detailed Analysis Modal -->
+        <div class="modal fade" id="playerModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Análise Detalhada do Jogador</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="chart-container" id="player-performance-chart">
+                                    <!-- Performance chart will be rendered here -->
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="chart-container" id="player-consistency-chart">
+                                    <!-- Consistency chart will be rendered here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h6>Notas e Observações</h6>
+                            <div id="player-notes" class="border p-3 rounded">
+                                <!-- Notes will be dynamically added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        // Função para criar card de jogador
+        function createPlayerCard(player) {
+            return `
+                <div class="col-md-4 mb-4">
+                    <div class="card player-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">${player.name}</h5>
+                                <span class="badge bg-primary stats-badge">${player.position}</span>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-4">
+                                    <small class="text-muted">Pontos</small>
+                                    <h6>${player.stats.points}</h6>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">Assistências</small>
+                                    <h6>${player.stats.assists}</h6>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">Rebotes</small>
+                                    <h6>${player.stats.rebounds}</h6>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100" onclick="showPlayerDetails('${player.id}')">
+                                Ver Detalhes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Função para mostrar detalhes do jogador
+        function showPlayerDetails(playerId) {
+            fetch(`/api/player-stats/${playerId}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Criar gráficos de performance
+                    Plotly.newPlot('player-performance-chart', data.performance_chart);
+                    Plotly.newPlot('player-consistency-chart', data.consistency_chart);
+
+                    // Adicionar notas
+                    const notesContainer = document.getElementById('player-notes');
+                    notesContainer.innerHTML = data.notes.map(note => `
+                        <div class="mb-2">
+                            <small class="text-muted">${note.date}</small>
+                            <p class="mb-0">${note.text}</p>
+                        </div>
+                    `).join('');
+
+                    // Mostrar modal
+                    new bootstrap.Modal(document.getElementById('playerModal')).show();
+                });
+        }
+
+        // Função para atualizar dados
+        function updateData() {
+            // Atualizar visão geral
+            fetch('/api/player-analysis/overview')
+                .then(response => response.json())
+                .then(data => {
+                    Plotly.newPlot('player-overview-chart', data.chart);
+                });
+
+            // Atualizar cards dos jogadores
+            fetch('/api/player-stats')
+                .then(response => response.json())
+                .then(players => {
+                    const container = document.getElementById('player-cards-container');
+                    container.innerHTML = players.map(player => createPlayerCard(player)).join('');
+                });
+        }
+
+        // Inicializar dados e configurar atualizações
+        updateData();
+        setInterval(updateData, 30000);
+
+        // Configurar busca
+        document.getElementById('player-search').addEventListener('input', function(e) {
+            const search = e.target.value.toLowerCase();
+            document.querySelectorAll('.player-card').forEach(card => {
+                const name = card.querySelector('.card-title').textContent.toLowerCase();
+                card.closest('.col-md-4').style.display = 
+                    name.includes(search) ? 'block' : 'none';
+            });
+        });
+
+        // Configurar filtro
+        document.getElementById('stat-filter').addEventListener('change', function(e) {
+            const filter = e.target.value;
+            updateData(filter);
+        });
+    </script>
+</body>
+</html>
